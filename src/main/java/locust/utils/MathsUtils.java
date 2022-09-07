@@ -12,6 +12,7 @@ import java.math.RoundingMode;
  */
 public class MathsUtils {
 
+    @Deprecated
     public static BigDecimal normalise(BigDecimal v_t1, BigDecimal v_t2, BigDecimal v_t3, BigDecimal v_t4, String v_expected) {
 
         BigDecimal sum = v_t1.add(v_t2).add(v_t3).add(v_t4);
@@ -22,66 +23,25 @@ public class MathsUtils {
         return diff;
     }
 
-    public static String getBigger(BigDecimal t1, BigDecimal t2, BigDecimal t3, BigDecimal t4) {
+    public static BigDecimal getBigger(BigDecimal... number) {
 
-        t1 = toPositive(t1);
-        t2 = toPositive(t2);
-        t3 = toPositive(t3);
-        t4 = toPositive(t4);
+        BigDecimal biggest = number[0];
 
-        BigDecimal[] numbers = new BigDecimal[]{t1, t2, t3, t4};
-        Boolean[][] bool = new Boolean[4][4];
+        for (int i = 1; i < number.length; i++) {
 
-        for (int index = 0; index < numbers.length; index++) {
+            if (number[i].compareTo(biggest) == 1) {
 
-            BigDecimal bd1 = numbers[index];
-
-            for (int i = 0; i < numbers.length; i++) {
-
-                BigDecimal bd2 = numbers[i];
-
-                int currInt = bd1.compareTo(bd2);
-
-                if (currInt == 1 || currInt == 0) {
-
-                    bool[index][i] = true;
-                } else {
-
-                    bool[index][i] = false;
-                }
+                biggest = number[i];
             }
         }
-
-        if (bool[0][0] && bool[0][1] && bool[0][2] && bool[0][3]) {
-
-            return "t1";
-        }
-
-        if (bool[1][0] && bool[1][1] && bool[1][2] && bool[1][3]) {
-
-            return "t2";
-        }
-
-        if (bool[2][0] && bool[2][1] && bool[2][2] && bool[2][3]) {
-
-            return "t3";
-        }
-
-        if (bool[3][0] && bool[3][1] && bool[3][2] && bool[3][3]) {
-
-            return "t4";
-        }
-
-        return null;
+        return biggest;
     }
 
     public static BigDecimal toPositive(BigDecimal v_input) {
 
-        double dVal = v_input.doubleValue();
+        if (v_input.compareTo(new BigDecimal(0)) == -1) {
 
-        if (dVal < 0) {
-
-            return new BigDecimal(dVal).multiply(new BigDecimal(-1));
+            return v_input.negate();
         } else {
 
             return v_input;
