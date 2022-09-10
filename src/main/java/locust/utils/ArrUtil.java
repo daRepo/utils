@@ -10,6 +10,8 @@ import java.util.List;
  * @author stnal
  */
 public class ArrUtil {
+    
+    private String divider = ",";
 
     public static boolean arrContains(String[] list, String string) {
 
