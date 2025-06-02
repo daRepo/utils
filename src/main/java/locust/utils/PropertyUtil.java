@@ -5,6 +5,7 @@ package locust.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -36,21 +37,19 @@ public class PropertyUtil {
     }
 
     private void load() {
-
-        if (innerJar) {
-
-            try {
-                input = new FileInputStream(new File(getClass().getClassLoader().getResource(source).toURI()));
-            } catch (Exception ex) {
-                Logger.getLogger(PropertyUtil.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-
-            try {
+        try {
+            if (innerJar) {
+                // Read the resource from the classloader directly
+                input = getClass().getClassLoader().getResourceAsStream(source);
+                if (input == null) {
+                    throw new FileNotFoundException("Resource not found in JAR: " + source);
+                }
+            } else {
+                // Read from file system
                 input = new FileInputStream(new File(source));
-            } catch (Exception ex) {
-                Logger.getLogger(PropertyUtil.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } catch (Exception ex) {
+            Logger.getLogger(PropertyUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
